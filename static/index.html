@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nummatch</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="game-container">
+    <div id="level-info"></div>
+    <div class="task-row">
+      <div id="left" class="num-slot" contenteditable="true"></div>
+      <div class="operator">×</div>
+      <div id="right" class="num-slot" contenteditable="true"></div>
+      <div class="equals">=</div>
+      <div id="target" class="result-block"></div>
+    </div>
+    <div id="feedback"></div>
+    <div class="restart-container">
+      <div id="game-container-buttons"></div>
+    </div>
+    <button id="check-btn">Check</button>
+    <div id="numpad-container"></div>
+  </div>
+  <script src="/static/keypad.js"></script>
+  <script src="/static/button.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
