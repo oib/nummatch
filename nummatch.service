@@ -1,0 +1,29 @@
+[Unit]
+Description=NumMatch - Educational Math Game for Children
+Documentation=https://github.com/yourusername/nummatch
+After=network.target
+
+[Service]
+Type=simple
+User=games
+WorkingDirectory=/var/www/nummatch
+Environment=PATH=/var/www/nummatch/venv/bin
+ExecStart=/var/www/nummatch/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/nummatch
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=nummatch
+
+[Install]
+WantedBy=multi-user.target

@@ -3,26 +3,44 @@
 <head>
   <title>Nummatch</title>
   <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <style>
+    /* Prevent flash of unstyled content */
+    body {
+      visibility: hidden;
+    }
+  </style>
 </head>
 <body>
   <div id="game-container">
+    <h1><span class="emoji">🔢</span> NumMatch</h1>
     <div id="level-info"></div>
     <div class="task-row">
-      <div id="left" class="num-slot" contenteditable="true"></div>
+      <div id="left" class="num-slot" contenteditable="true">🧩</div>
       <div class="operator">×</div>
-      <div id="right" class="num-slot" contenteditable="true"></div>
+      <div id="right" class="num-slot" contenteditable="true">🔢</div>
       <div class="equals">=</div>
-      <div id="target" class="result-block"></div>
+      <div id="target" class="result-block">🎯</div>
     </div>
     <div id="feedback"></div>
     <div class="restart-container">
-      <div id="game-container-buttons"></div>
+      <button id="restart-btn">🔄 Neues Spiel</button>
     </div>
-    <button id="check-btn">Check</button>
-    <div id="numpad-container"></div>
+  </div>
+  
+  <div id="numpad-section">
+    <div id="numpad-container">
+    </div>
   </div>
   <script src="/static/keypad.js"></script>
   <script src="/static/button.js"></script>
   <script src="/static/app.js"></script>
+  <script>
+    // Show the page once everything is loaded
+    window.addEventListener('load', function() {
+      document.body.style.visibility = 'visible';
+    });
+  </script>
 </body>
 </html>
+

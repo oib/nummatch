@@ -1,49 +1,18 @@
-let currentLevel = 1;
+let targetValue = null;
 let score = 0;
 let activeField = null;
-const maxScorePerLevel = 10;
-
-function saveProgress(level, score) {
-  localStorage.setItem("nummatch_level", level);
-  localStorage.setItem("nummatch_score", score);
-  updateStatus();
-}
-
-function loadProgress() {
-  const level = parseInt(localStorage.getItem("nummatch_level")) || 1;
-  const score = parseInt(localStorage.getItem("nummatch_score")) || 0;
-  return { level, score };
-}
-
-function updateStatus() {
-  document.getElementById("level-info").textContent = `Level: ${currentLevel} – Punkte: ${score}`;
-}
 
 function generateTarget(min, max) {
   const a = Math.floor(Math.random() * (max - min + 1)) + min;
   const b = Math.floor(Math.random() * (max - min + 1)) + min;
-  return a * b;
+  return a * b; // alle möglichen Kombinationen zulassen
 }
 
-async function getLevelData(levelNumber) {
-  try {
-    const response = await fetch(`/get_level/${levelNumber}`);
-    if (response.ok) {
-      return await response.json();
-    } else {
-      console.error(`Failed to fetch level data: ${response.status}`);
-      return { multiplier_range: [1, 10] };
-    }
-  } catch (error) {
-    console.error("Error fetching level data:", error);
-    return { multiplier_range: [1, 10] };
-  }
-}
-
-async function startGame(levelNumber) {
-  const level = await getLevelData(levelNumber);
-  const [min, max] = level.multiplier_range;
-  document.getElementById("target").textContent = generateTarget(min, max);
+async function startGame() {
+  const min = 1;
+  const max = 9;
+  targetValue = generateTarget(min, max);
+  document.getElementById("target").textContent = targetValue;
 
   const leftInput = document.getElementById("left");
   const rightInput = document.getElementById("right");
@@ -59,19 +28,20 @@ async function startGame(levelNumber) {
   feedback.textContent = "";
   feedback.classList.remove("feedback-ok", "feedback-fail");
 
+  // Set active field to left by default
   activeField = leftInput;
-  activeField.classList.add("active");
+  leftInput.classList.add("active");
   rightInput.classList.remove("active");
-  leftInput.focus();
-
-  updateStatus();
+  // Don't set focus here - let the calling function handle it
 }
 
 function checkAnswer() {
   const leftInput = document.getElementById("left");
   const rightInput = document.getElementById("right");
-  const [left, right] = getValues("left", "right");
-  const target = parseInt(document.getElementById("target").textContent);
+  const [rawLeft, rawRight] = getValues("left", "right");
+  const left = parseInt(rawLeft, 10);
+  const right = parseInt(rawRight, 10);
+  const target = targetValue;
   const feedback = document.getElementById("feedback");
 
   feedback.classList.remove("feedback-ok", "feedback-fail");
@@ -85,19 +55,21 @@ function checkAnswer() {
     leftInput.classList.add("ok");
     rightInput.classList.add("ok");
 
-    submitScore(score, currentLevel);
+    submitScore(score)
 
-    if (score >= maxScorePerLevel) {
-      currentLevel++;
-      score = 0;
-    }
+    
 
-    saveProgress(currentLevel, score);
+    
     setTimeout(() => {
       feedback.textContent = "";
       feedback.classList.remove("feedback-ok");
-      startGame(currentLevel);
-    }, 2000);
+      startGame();
+      // Set focus to left field after restart
+      setTimeout(() => {
+        const leftInput = document.getElementById("left");
+        leftInput.focus();
+      }, 50);
+    }, 3000);
   } else {
     feedback.textContent = "❌ Versuch’s nochmal.";
     feedback.classList.add("feedback-fail");
@@ -107,13 +79,17 @@ function checkAnswer() {
     setTimeout(() => {
       feedback.textContent = "";
       feedback.classList.remove("feedback-fail");
-      saveProgress(currentLevel, score);
-      startGame(currentLevel);
-    }, 2000);
+      startGame();
+      // Set focus to left field after restart
+      setTimeout(() => {
+        const leftInput = document.getElementById("left");
+        leftInput.focus();
+      }, 50);
+    }, 3000);
   }
 }
 
-async function submitScore(score, level) {
+async function submitScore(score) {
   try {
     await fetch("/submit_score/", {
       method: "POST",
@@ -121,43 +97,48 @@ async function submitScore(score, level) {
       body: JSON.stringify({
         player_name: "Anonymous",
         score: score,
-        level_number: level,
+        level_number: 1,
         date: new Date().toISOString().split("T")[0],
       }),
     });
+    
   } catch (error) {
-    console.error("Error submitting score:", error);
+    // Score submission failed - continue game
   }
 }
 
 window.addEventListener("load", () => {
-  const checkBtn = document.getElementById("check-btn");
-  if (checkBtn) {
-    checkBtn.addEventListener("click", checkAnswer);
-  } else {
-    console.error("Check button not found!");
+  // Add restart button functionality
+  const restartBtn = document.getElementById("restart-btn");
+  if (restartBtn) {
+    restartBtn.addEventListener("click", () => {
+      score = 0;
+      startGame();
+      setTimeout(() => {
+        const leftInput = document.getElementById("left");
+        leftInput.focus();
+      }, 50);
+    });
   }
 
-  const leftInput = document.getElementById("left");
-  leftInput.classList.add("active");
-  activeField = leftInput;
-  leftInput.focus();
   createNumBlock("numpad-container");
   setupNumInputs("left", "right");
-  insertButton("game-container-buttons", "restart-btn", "🔁 Neustart", () => {
-    localStorage.removeItem("nummatch_level");
-    localStorage.removeItem("nummatch_score");
-    score = 0;
-    currentLevel = 1;
-    activeField = document.getElementById("left");
-    activeField.classList.add("active");
-    activeField.focus();
-    saveProgress(currentLevel, score);
-    startGame(currentLevel);
-  });
-  const progress = loadProgress();
-  currentLevel = progress.level;
-  score = progress.score;
 
-  startGame(currentLevel);
+  score = 0;
+
+  // Start the game first, then ensure focus
+  startGame();
+  
+  // Ensure focus is set after a short delay
+  setTimeout(() => {
+    const leftInput = document.getElementById("left");
+    leftInput.classList.add("active");
+    activeField = leftInput;
+    leftInput.focus();
+  }, 100);
 });
+
+// Make functions globally available
+window.checkAnswer = checkAnswer;
+window.startGame = startGame;
+

@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# NumMatch Game Startup Script
+# This script helps start the NumMatch math game for children
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Game directory
+GAME_DIR="/var/www/nummatch"
+VENV_DIR="$GAME_DIR/venv"
+
+echo -e "${BLUE}🔢 NumMatch - Educational Math Game${NC}"
+echo "=================================="
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    echo -e "${RED}Please run this script with sudo: sudo game${NC}"
+    exit 1
+fi
+
+# Check if game directory exists
+if [ ! -d "$GAME_DIR" ]; then
+    echo -e "${RED}Error: Game directory not found at $GAME_DIR${NC}"
+    exit 1
+fi
+
+# Create virtual environment if it doesn't exist
+if [ ! -d "$VENV_DIR" ]; then
+    echo -e "${YELLOW}Creating virtual environment...${NC}"
+    cd "$GAME_DIR"
+    python3 -m venv venv
+    chown -R games:games venv
+fi
+
+# Install dependencies if needed
+echo -e "${YELLOW}Checking dependencies...${NC}"
+cd "$GAME_DIR"
+source venv/bin/activate
+
+# Check if fastapi and uvicorn are installed
+if ! python -c "import fastapi, uvicorn" 2>/dev/null; then
+    echo -e "${YELLOW}Installing required packages...${NC}"
+    pip install fastapi uvicorn
+fi
+
+# Check if the service is already running
+if systemctl is-active --quiet nummatch; then
+    echo -e "${GREEN}✓ NumMatch service is already running!${NC}"
+    echo -e "${GREEN}🎮 Game available at: http://localhost:8000${NC}"
+    
+    read -p "Would you like to restart the service? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Restarting NumMatch service...${NC}"
+        systemctl restart nummatch
+        sleep 2
+        if systemctl is-active --quiet nummatch; then
+            echo -e "${GREEN}✓ Service restarted successfully!${NC}"
+        else
+            echo -e "${RED}✗ Failed to restart service${NC}"
+            systemctl status nummatch --no-pager -l
+            exit 1
+        fi
+    fi
+else
+    # Install and start the service
+    echo -e "${YELLOW}Installing systemd service...${NC}"
+    cp "$GAME_DIR/nummatch.service" /etc/systemd/system/
+    systemctl daemon-reload
+    systemctl enable nummatch
+    
+    echo -e "${YELLOW}Starting NumMatch service...${NC}"
+    systemctl start nummatch
+    sleep 2
+    
+    if systemctl is-active --quiet nummatch; then
+        echo -e "${GREEN}✓ Service started successfully!${NC}"
+    else
+        echo -e "${RED}✗ Failed to start service${NC}"
+        systemctl status nummatch --no-pager -l
+        exit 1
+    fi
+fi
+
+# Show service status
+echo
+echo -e "${BLUE}Service Status:${NC}"
+systemctl status nummatch --no-pager -l | head -n 5
+
+echo
+echo -e "${GREEN}🎉 NumMatch is ready!${NC}"
+echo -e "${GREEN}📍 Play the game at: http://localhost:8000${NC}"
+echo -e "${GREEN}📊 View logs with: journalctl -u nummatch -f${NC}"
+echo -e "${GREEN}🛑 Stop the game with: sudo systemctl stop nummatch${NC}"
