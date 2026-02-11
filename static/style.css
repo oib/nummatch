@@ -9,6 +9,14 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
+#page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+}
+
 #game-container {
   max-width: 960px;
   text-align: center;
@@ -256,14 +264,11 @@ h1 {
 
 /* Footer Styles */
 #footer {
-  width: 100vw;
-  margin-top: 3rem;
+  width: 100%;
+  margin-top: auto;
   padding: 3rem 1rem;
   background: linear-gradient(135deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 73, 94, 0.95) 50%, rgba(44, 62, 80, 0.95) 100%);
   border-top: 3px solid #B19CD9;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
   box-shadow: 0 -5px 20px rgba(177, 156, 217, 0.2);
   overflow: hidden;
 }

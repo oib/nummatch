@@ -12,44 +12,46 @@
   </style>
 </head>
 <body>
-  <div id="game-container">
-    <h1><span class="emoji">🔢</span> NumMatch</h1>
-    <div id="level-info"></div>
-    <div class="task-row">
-      <div id="left" class="num-slot" contenteditable="true">🧩</div>
-      <div class="operator">×</div>
-      <div id="right" class="num-slot" contenteditable="true">🔢</div>
-      <div class="equals">=</div>
-      <div id="target" class="result-block">🎯</div>
+  <div id="page-wrapper">
+    <div id="game-container">
+      <h1><span class="emoji">🔢</span> NumMatch</h1>
+      <div id="level-info"></div>
+      <div class="task-row">
+        <div id="left" class="num-slot" contenteditable="true">🧩</div>
+        <div class="operator">×</div>
+        <div id="right" class="num-slot" contenteditable="true">🔢</div>
+        <div class="equals">=</div>
+        <div id="target" class="result-block">🎯</div>
+      </div>
+      <div id="feedback"></div>
+      <div class="restart-container">
+        <button id="restart-btn">🔄 Neues Spiel</button>
+      </div>
     </div>
-    <div id="feedback"></div>
-    <div class="restart-container">
-      <button id="restart-btn">🔄 Neues Spiel</button>
-    </div>
-  </div>
   
-  <div id="numpad-section">
-    <div id="numpad-container">
+    <div id="numpad-section">
+      <div id="numpad-container">
+      </div>
     </div>
-  </div>
   
-  <!-- Footer Section -->
-  <footer id="footer">
-    <div class="footer-content">
-      <a href="https://github.com/oib/nummatch" target="_blank" rel="noopener noreferrer" class="footer-link">
-        <span class="footer-icon">🐙</span>
-        <span class="footer-text">View on GitHub</span>
-      </a>
-      <a href="https://games.orangeicebear.at" target="_blank" rel="noopener noreferrer" class="footer-link">
-        <span class="footer-icon">🎮</span>
-        <span class="footer-text">More Games</span>
-      </a>
-      <a href="https://bubuit.net" target="_blank" rel="noopener noreferrer" class="footer-link">
-        <span class="footer-icon">🌐</span>
-        <span class="footer-text">bubuit.net</span>
-      </a>
-    </div>
-  </footer>
+    <!-- Footer Section -->
+    <footer id="footer">
+      <div class="footer-content">
+        <a href="https://github.com/oib/nummatch" target="_blank" rel="noopener noreferrer" class="footer-link">
+          <span class="footer-icon">🐙</span>
+          <span class="footer-text">View on GitHub</span>
+        </a>
+        <a href="https://games.orangeicebear.at" target="_blank" rel="noopener noreferrer" class="footer-link">
+          <span class="footer-icon">🎮</span>
+          <span class="footer-text">More Games</span>
+        </a>
+        <a href="https://bubuit.net" target="_blank" rel="noopener noreferrer" class="footer-link">
+          <span class="footer-icon">🌐</span>
+          <span class="footer-text">bubuit.net</span>
+        </a>
+      </div>
+    </footer>
+  </div>
   
   <script src="/static/keypad.js"></script>
   <script src="/static/button.js"></script>
