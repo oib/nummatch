@@ -258,21 +258,41 @@ h1 {
 #footer {
   width: 100vw;
   margin-top: 3rem;
-  padding: 2rem 1rem;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-top: 2px solid #B19CD9;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 73, 94, 0.95) 50%, rgba(44, 62, 80, 0.95) 100%);
+  border-top: 3px solid #B19CD9;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
+  box-shadow: 0 -5px 20px rgba(177, 156, 217, 0.2);
+  overflow: hidden;
+}
+
+#footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 8s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 .footer-content {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .footer-link {
@@ -281,49 +301,113 @@ h1 {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  padding: 1rem;
-  border-radius: 12px;
-  min-height: 80px;
-  transition: all 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 1rem;
+  border-radius: 20px;
+  min-height: 100px;
+  min-width: 120px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-link::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(177, 156, 217, 0.3) 0%, transparent 70%);
+  transition: all 0.5s ease;
+  transform: translate(-50%, -50%);
+}
+
+.footer-link:hover::before {
+  width: 150px;
+  height: 150px;
 }
 
 .footer-link:hover {
-  transform: translateY(-5px);
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 5px 15px rgba(177, 156, 217, 0.3);
+  transform: translateY(-8px) scale(1.05);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  box-shadow: 0 10px 30px rgba(177, 156, 217, 0.4), 
+              0 0 20px rgba(177, 156, 217, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: rgba(177, 156, 217, 0.5);
 }
 
 .footer-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
   display: block;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.footer-link:hover .footer-icon {
+  transform: scale(1.1) rotateY(10deg);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.2);
 }
 
 .footer-text {
   color: #E8D5F2;
-  font-size: 0.9rem;
-  font-weight: bold;
+  font-size: 0.95rem;
+  font-weight: 600;
   text-align: center;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
 }
 
 .footer-link:hover .footer-text {
   color: #FFD700;
+  transform: translateY(-2px);
+  text-shadow: 0 2px 4px rgba(255, 215, 0, 0.4);
 }
+
+/* Add pulse animation to icons */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.footer-icon {
+  animation: pulse 2s infinite;
+}
+
+.footer-link:nth-child(1) .footer-icon { animation-delay: 0s; }
+.footer-link:nth-child(2) .footer-icon { animation-delay: 0.3s; }
+.footer-link:nth-child(3) .footer-icon { animation-delay: 0.6s; }
 
 /* Mobile Responsive */
 @media (max-width: 600px) {
+  #footer {
+    padding: 2rem 0.5rem;
+  }
+  
+  .footer-content {
+    gap: 0.75rem;
+  }
+  
   .footer-icon {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
   
   .footer-text {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
   
   .footer-link {
-    padding: 0.75rem;
-    min-height: 70px;
+    padding: 1rem 0.75rem;
+    min-height: 85px;
+    min-width: 100px;
+  }
+  
+  .footer-link:hover {
+    transform: translateY(-5px) scale(1.02);
   }
 }
 
